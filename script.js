@@ -45,7 +45,7 @@ function createList() {
       draggable_list.appendChild(listItem);
     });
 
-  addEventListener();
+  addEventListeners();
 }
 
 function dragStart() {
@@ -54,33 +54,47 @@ function dragStart() {
 }
 function dragEnter() {
   // console.log('Event: ', 'dragenter');
-  this.createList.add('over');
+  this.classList.add('over');
 }
 function dragLeave() {
   //  console.log('Event: ', 'dragleave');
-  this.createList.remove('over');
+  this.classList.remove('over');
 }
 function dragOver(e) {
   // console.log('Event: ', 'dragover');
   e.preventDefault();
 }
 function dragDrop() {
-  // console.log('Event: ', 'dragdrop');
+  // console.log('Event: ', 'drop');
   const dragEndIndex = +this.getAttribute('data-index');
   swapItems(dragStartIndex, dragEndIndex);
 
   this.classList.remove('over');
 }
 
+// Swap list items that are drag and drop
 function swapItems(fromIndex, toIndex) {
   const itemOne = listItems[fromIndex].querySelector('.draggable');
   const itemTwo = listItems[toIndex].querySelector('.draggable');
 
   listItems[fromIndex].appendChild(itemTwo);
-  listItem[toIndex].appendChild(itemOne);
+  listItems[toIndex].appendChild(itemOne);
 }
 
-function addEventListener() {
+// Check the order of list items
+function checkOrder() {
+  listItems.forEach((listItem, index) => {
+    const personName = listItem.querySelector('.draggable').innerText.trim();
+    if (personName !== richestPeople[index]) {
+      listItem.classList.add('wrong');
+    } else {
+      listItem.classList.remove('wrong');
+      listItem.classList.add('right');
+    }
+  });
+}
+
+function addEventListeners() {
   const draggables = document.querySelectorAll('.draggable');
   const dragListItems = document.querySelectorAll('.draggable-list li');
 
@@ -92,6 +106,8 @@ function addEventListener() {
     item.addEventListener('dragover', dragOver);
     item.addEventListener('drop', dragDrop);
     item.addEventListener('dragenter', dragEnter);
-    item.addEventListener('dragLeave', dragLeave);
+    item.addEventListener('dragleave', dragLeave);
   });
 }
+
+check.addEventListener('click', checkOrder);
